@@ -6,6 +6,13 @@
     #define smaller(a, b) ((a) < (b) ? (a) : (b))
     #define larger(a, b) ((a) > (b) ? (a) : (b))
     
+    
+    #ifdef DEBUG
+    #define NSLog(FORMAT, ...) fprintf(stderr,"%s",[[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
+    #else
+    #define NSLog(...)
+    #endif
+    
     static char const *st_source_string;
     static unsigned long st_current_char_index;
     static unsigned long st_source_len;
@@ -125,16 +132,9 @@
 <INITIAL>"%="   { nz_print_initial_log(yytext); return MOD_ASSIGN; }
 <INITIAL>"="    { nz_print_initial_log(yytext); return ASSIGN; }
 
-<INITIAL>"/*"   { nz_print_initial_log(yytext);  BEGIN C_COMMENT; }
-<INITIAL>"/**"  { nz_print_initial_log(yytext);  BEGIN C_COMMENT; }
-<INITIAL>"//"   { nz_print_initial_log(yytext);  BEGIN CC_COMMENT; }
-<INITIAL>.      { nz_print_initial_log(yytext); }
-
-
 <INITIAL>"declare"  { nz_print_initial_log(yytext); return DECLARE; }
 <INITIAL>"struct"   { nz_print_initial_log(yytext); return STRUCT; }
 <INITIAL>"class"    { nz_print_initial_log(yytext); return CLASS; }
-
 
 <INITIAL>"if"       { nz_print_initial_log(yytext); return IF; }
 <INITIAL>"else"     { nz_print_initial_log(yytext); return ELSE; }
@@ -221,8 +221,8 @@
     BEGIN STRING_LITERAL_STATE;
 }
 
-<INITIAL>[ \t] { nz_print_initial_log(yytext); }
-<INITIAL>[\n]  { nz_print_initial_log(yytext); }
+<INITIAL>[ \t] ;
+<INITIAL>[\n]  ;
 
 <INITIAL>"/*"  { nz_print_initial_log(yytext);  BEGIN C_COMMENT; }
 <INITIAL>"/**" { nz_print_initial_log(yytext);  BEGIN C_COMMENT; }
@@ -260,7 +260,6 @@
     nz_print_ccomment_log(yytext);
     BEGIN INITIAL;
 }
-
 
 <STRING_LITERAL_STATE>\" {
     nz_print_literal_log(yytext);

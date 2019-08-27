@@ -9,6 +9,7 @@
 #ifndef nz_common_h
 #define nz_common_h
 
+
 int yyerror(char const *str);
 
 #endif /* nz_common_h */
